@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: School | Codin']]></title>
+  <title><![CDATA[Category: school | Codin']]></title>
   <link href="http://nadlerjessie.github.io/blog/categories/school/atom.xml" rel="self"/>
   <link href="http://nadlerjessie.github.io/"/>
-  <updated>2015-09-28T19:48:37-04:00</updated>
+  <updated>2015-10-01T15:42:55-04:00</updated>
   <id>http://nadlerjessie.github.io/</id>
   <author>
     <name><![CDATA[Jessie Nadler]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[My First Post on Octopress]]></title>
+    <title type="html"><![CDATA[My First Post On Octopress]]></title>
     <link href="http://nadlerjessie.github.io/blog/2015/09/28/my-first-post-on-octopress/"/>
     <updated>2015-09-28T19:43:50-04:00</updated>
     <id>http://nadlerjessie.github.io/blog/2015/09/28/my-first-post-on-octopress</id>
