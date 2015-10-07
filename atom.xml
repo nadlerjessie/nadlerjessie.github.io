@@ -4,7 +4,7 @@
   <title><![CDATA[Codin']]></title>
   <link href="http://nadlerjessie.github.io/atom.xml" rel="self"/>
   <link href="http://nadlerjessie.github.io/"/>
-  <updated>2015-10-01T15:42:55-04:00</updated>
+  <updated>2015-10-06T20:55:31-04:00</updated>
   <id>http://nadlerjessie.github.io/</id>
   <author>
     <name><![CDATA[Jessie Nadler]]></name>
@@ -12,6 +12,102 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[What's the difference between...?]]></title>
+    <link href="http://nadlerjessie.github.io/blog/2015/10/05/whats-the-difference-between-dot-dot-dot/"/>
+    <updated>2015-10-05T21:14:33-04:00</updated>
+    <id>http://nadlerjessie.github.io/blog/2015/10/05/whats-the-difference-between-dot-dot-dot</id>
+    <content type="html"><![CDATA[<p>As a new programmer I have frequently found myself asking the question, what’s the difference between these two methods? This is most common when it comes to enumerables. Here I’ll explain some differences between a few methods I find very useful. It is important to understand the differences so you can choose the best enumerable and create the most efficient code.</p>
+
+<p>Before I dive in, it may be helpful to define an enumerable. Ruby-Doc defines the <code>Enumerable</code> module to provide collection classes with several traversal and searching methods, and with the ability to sort.</p>
+
+<p>Enumerable methods allow you to loop over all of the members of a given collection. Each member will be passed to a block. Some enumerables will simply verify the truthiness of a statement and others will return a modified argument.</p>
+
+<p>First let’s get some easy ones out of the way. What’s the difference between collect and map? Nothing, they’re aliases! What’s the difference between find and detect? Nothing!</p>
+
+<p>Now that we’ve covered a few alias methods, let’s dig into some more complex comparisons.</p>
+
+<p><strong>Select vs Collect</strong>
+<em>Select</em> will iterate through each member and only return a given member if the information in the block is true. This returns a new array.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">array</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">array</span><span class="o">.</span><span class="n">select</span><span class="p">{</span> <span class="o">|</span><span class="n">num</span><span class="o">|</span> <span class="n">num</span><span class="o">.</span><span class="n">even?</span> <span class="p">}</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="o">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Collect</em> will iterate through each member and return a new array with information based on the block. This could be an argument checking the truthiness or modifying the element, both shown below.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">array</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">array</span><span class="o">.</span><span class="n">collect</span><span class="p">{</span> <span class="o">|</span><span class="n">num</span><span class="o">|</span> <span class="n">num</span><span class="o">.</span><span class="n">even?</span> <span class="p">}</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="o">[</span><span class="kp">false</span><span class="p">,</span> <span class="kp">true</span><span class="p">,</span> <span class="kp">false</span><span class="p">,</span> <span class="kp">true</span><span class="p">,</span> <span class="kp">false</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The collect example above isn&rsquo;t that helpful to grab the even numbers. Collect can also modify the element that goes to the return, shown below.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">array</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">array</span><span class="o">.</span><span class="n">collect</span><span class="p">{</span> <span class="o">|</span><span class="n">num</span><span class="o">|</span> <span class="n">num</span><span class="o">/</span><span class="mi">2</span> <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">even?</span> <span class="p">}</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A the most apparent difference is that collect can modify an element before passing it to the return array. Select can only return the elements from the existing array. A less obvious, but important, difference is that collect will always return the same number of elements as the argument the method is called on. If the block in the collect statement is a logic statement, nil will be used if the block is false. Most often, you won’t want to carry around these nil values!</p>
+
+<p><strong>Select vs Find</strong>
+<em>Select</em>, as discussed above, will select all of the elements that cause the block to return true. <em>Find</em> will pull the first element that returns the block to be true. The big difference here may be obvious: select will return all of the elements that return true when passed to the block. A more nuanced difference is that find returns the element based on its current class.</p>
+
+<p>Starting with the example above, we see find returns the first instance that turns the block true.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">array</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">array</span><span class="o">.</span><span class="n">find</span><span class="p">{</span> <span class="o">|</span><span class="n">num</span><span class="o">|</span> <span class="n">num</span><span class="o">.</span><span class="n">even?</span> <span class="p">}</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="mi">2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Looking at the class of the return value tells us more about find&rsquo;s utility.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">hash_array</span> <span class="o">=</span> <span class="o">[</span> <span class="p">{</span><span class="mi">1</span><span class="o">=&gt;</span><span class="s2">&quot;one&quot;</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="mi">2</span> <span class="o">=&gt;</span> <span class="s2">&quot;two&quot;</span><span class="p">}</span> <span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">useSelect</span> <span class="o">=</span> <span class="n">hash_array</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span><span class="o">|</span><span class="nb">hash</span><span class="o">|</span> <span class="nb">hash</span> <span class="k">if</span> <span class="nb">hash</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">}</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="o">[</span> <span class="p">{</span><span class="mi">1</span><span class="o">=&gt;</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="o">=&gt;</span><span class="s2">&quot;two&quot;</span><span class="p">}</span> <span class="o">]</span> <span class="c1">#useSelect.class =&gt; Array</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">useFind</span> <span class="o">=</span>  <span class="n">hash_array</span><span class="o">.</span><span class="n">find</span> <span class="p">{</span><span class="o">|</span><span class="nb">hash</span><span class="o">|</span> <span class="nb">hash</span> <span class="k">if</span> <span class="nb">hash</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">}</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="p">{</span><span class="mi">1</span><span class="o">=&gt;</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="o">=&gt;</span><span class="s2">&quot;two&quot;</span><span class="p">}</span>  <span class="c1">#useFind.class =&gt; Hash</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This may be useful if you don’t want the element you’re looking to pull to be put in array. Of course if you do in fact want all of the arguments that return true the elements can be extracted from the array using methods like first, last or by index!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[My First Post On Octopress]]></title>
