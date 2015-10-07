@@ -4,10 +4,10 @@
 
 url: http://nadlerjessie.github.io
 title: Codin'
-subtitle: "Warning: new blogger alert"
+subtitle: Here we go! 
 author: Jessie Nadler
 simple_search: https://www.google.com/search
-description: Learning about programming and lots of other stuff along the way. 
+description: Learning about programming and some other things along the way. 
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -64,14 +64,14 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 # ----------------------- #
 
 # Github repositories
-github_user:
+github_user: nadlerjessie
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
 twitter_user:
-twitter_tweet_button: true
+twitter_tweet_button: false #true
 
 # Google +1
 google_plus_one: false
