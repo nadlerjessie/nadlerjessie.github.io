@@ -4,7 +4,7 @@
   <title><![CDATA[Codin']]></title>
   <link href="http://nadlerjessie.github.io/atom.xml" rel="self"/>
   <link href="http://nadlerjessie.github.io/"/>
-  <updated>2015-10-23T08:43:48-04:00</updated>
+  <updated>2015-10-23T08:46:11-04:00</updated>
   <id>http://nadlerjessie.github.io/</id>
   <author>
     <name><![CDATA[Jessie Nadler]]></name>
@@ -18,9 +18,9 @@
     <link href="http://nadlerjessie.github.io/blog/2015/10/23/capybara/"/>
     <updated>2015-10-23T07:47:00-04:00</updated>
     <id>http://nadlerjessie.github.io/blog/2015/10/23/capybara</id>
-    <content type="html"><![CDATA[<p>In the last week I started to work with Sinatra and building my first web applications. Some of the labs I have done at the Flatiron School have used the Capybara gem as part of the test specs. Though I was interacting with Capybara, it was mostly indirectly. I didn’t need to look too deep at the Capybara functionality until a group I was working with needed to write some specs of our own.</p>
+    <content type="html"><![CDATA[<p>In the last week I started to work with Sinatra and building my first web applications. Some of the labs I have done at the Flatiron School have used the Capybara gem as part of the test specs. Though I was interacting with Capybara, it was mostly indirectly. I didn’t need to look too closely at the Capybara functionality until a group I was working with needed to write some specs of our own.</p>
 
-<p><strong>Capybara</strong> is a framework that allows you to test your web-based applications. Capybara is a web-based automation tool; it will simulate how your users will interact with your application.</p>
+<p>Capybara is a framework that allows you to test your web-based applications. Capybara is a web-based automation tool; it will simulate how your users will interact with your application.</p>
 
 <p>Capybara is loaded using the DSL (domain specific language) and has a number of capabilities similar to what a user might do when visiting a webpage. Some basic functions are listed below:</p>
 
@@ -60,7 +60,7 @@
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">LandmarksController</span> <span class="k">do</span>
 </span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;changes landmark and saves changes&quot;</span> <span class="k">do</span>
 </span><span class='line'>    <span class="vi">@landmark</span> <span class="o">=</span> <span class="no">Landmark</span><span class="o">.</span><span class="n">first</span> <span class="c1">#1</span>
-</span><span class='line'>    <span class="n">visit</span> <span class="sr">/landmarks/</span><span class="c1">#{@landmark.id}/edit #2</span>
+</span><span class='line'>    <span class="n">visit</span> <span class="s2">&quot;/landmarks/</span><span class="si">#{</span><span class="vi">@landmark</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/edit&quot;</span> <span class="c1">#2</span>
 </span><span class='line'>    <span class="n">fill_in</span><span class="p">(</span><span class="s1">&#39;landmark[name]&#39;</span><span class="p">,</span> <span class="ss">:with</span> <span class="o">=&gt;</span> <span class="s1">&#39;Statue of Liberty&#39;</span><span class="p">)</span> <span class="c1">#3</span>
 </span><span class='line'>    <span class="n">click_button</span><span class="p">(</span><span class="s1">&#39;Save&#39;</span><span class="p">)</span> <span class="c1">#4</span>
 </span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">current_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="s2">&quot;/landmarks/</span><span class="si">#{</span><span class="vi">@landmark</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span> <span class="c1">#5</span>
