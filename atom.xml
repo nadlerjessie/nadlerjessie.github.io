@@ -4,7 +4,7 @@
   <title><![CDATA[Codin']]></title>
   <link href="http://nadlerjessie.github.io/atom.xml" rel="self"/>
   <link href="http://nadlerjessie.github.io/"/>
-  <updated>2015-10-23T08:06:41-04:00</updated>
+  <updated>2015-10-23T08:42:51-04:00</updated>
   <id>http://nadlerjessie.github.io/</id>
   <author>
     <name><![CDATA[Jessie Nadler]]></name>
@@ -87,7 +87,7 @@
 
 <p>There are some other web-based automation tools, such as    <a href = "http://www.rubydoc.info/gems/selenium-webdriver/0.0.28/Selenium/WebDriver/Driver">Selenium</a> and <a href= "http://watir.com/">Watir</a>, which are worth looking into if Capybara doesn’t have everything you need. Unfortunately if you Google those you won’t get shown cute pictures of the animal :)</p>
 
-<p><img src="images/capybara.jpg"></p>
+<p><img class="center" src="http://nadlerjessie.github.io/images/capybara.jpg"></p>
 ]]></content>
   </entry>
   
