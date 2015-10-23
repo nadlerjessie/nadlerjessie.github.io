@@ -1,0 +1,227 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script data-cfasync="false" type="text/javascript" src="//use.typekit.net/axj3cfp.js"></script>
+	<script data-cfasync="false" type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<meta charset="utf-8">
+	<title>Capybara  | Codin'</title>
+
+<meta name="author" content="Jessie Nadler"> 
+
+<meta name="description" content="Learning about programming and some other things along the way."> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Codin'" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+	
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Codin'</a></h1>
+<h4>Here we go!</h4>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/about">About</a></li>
+	<li><a href="/portfolio">Portfolio</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/about">About</a></li>
+	<li><a href="/portfolio">Portfolio</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nadlerjessie.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Capybara</h2>
+	<div class="entry-content"><p>In the last week I started to work with Sinatra and building my first web applications. Some of the labs I have done at the Flatiron School have used the Capybara gem as part of the test specs. Though I was interacting with Capybara, it was mostly indirectly. I didn’t need to look too deep at the Capybara functionality until a group I was working with needed to write some specs of our own.</p>
+
+<p><strong>Capybara</strong> is a framework that allows you to test your web-based applications. Capybara is a web-based automation tool; it will simulate how your users will interact with your application.</p>
+
+<p>Capybara is loaded using the DSL (domain specific language) and has a number of capabilities similar to what a user might do when visiting a webpage. Some basic functions are listed below:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">visit</span><span class="p">(</span><span class="err">‘</span><span class="n">page_url</span><span class="err">’</span><span class="p">)</span> <span class="c1">#navigate to page</span>
+</span><span class='line'><span class="n">click_link</span><span class="p">(</span><span class="err">‘</span><span class="n">id_of_link</span><span class="err">’</span><span class="p">)</span> <span class="c1">#click link</span>
+</span><span class='line'><span class="n">click_button</span><span class="p">(</span><span class="err">‘</span><span class="n">link_text</span><span class="err">’</span><span class="p">)</span> <span class="c1">#click button</span>
+</span><span class='line'><span class="n">click_on</span><span class="p">(</span><span class="err">‘</span><span class="n">link_text</span><span class="err">’</span><span class="p">)</span> <span class="c1">#this will look for either a link or a button</span>
+</span><span class='line'><span class="n">fill_in</span><span class="p">(</span><span class="err">‘</span><span class="n">params_path</span><span class="err">’</span><span class="p">,</span> <span class="ss">:with</span> <span class="o">=&gt;</span> <span class="err">‘</span><span class="n">value</span><span class="err">’</span><span class="p">)</span> <span class="c1">#adds content to field</span>
+</span><span class='line'><span class="n">choose</span><span class="p">(</span><span class="err">‘</span><span class="n">radio_button</span><span class="err">’</span><span class="p">)</span> <span class="c1">#checks radio button</span>
+</span><span class='line'><span class="n">check</span><span class="p">(</span><span class="err">‘</span><span class="n">checkbox</span><span class="err">’</span><span class="p">)</span> <span class="c1">#selects checkbox</span>
+</span><span class='line'><span class="n">uncheck</span><span class="p">(</span><span class="err">‘</span><span class="n">checkbox</span><span class="err">’</span><span class="p">)</span> <span class="c1">#removes existing checkbox selection</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>These are super useful! Using Capybara your test spec can navigate to any page and make selections just like a user would make. Typically the last thing to check is whether or not the rendered page has the correct content. Capybara has a keyword ‘page’, which allows you to do just that!</p>
+
+<p>Below is the code I used to confirm my webpage was working. First I created an instance variable to operate on (1). Next I navigated to the correct webpage (2) and filled in the name for a landmark (3). I saved the file (4) and confirmed that saving the page took me to the right URL (5). Last (6), I confirmed that the page had the content I added in step 3! Easy, right?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">LandmarksController</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;changes landmark and saves changes&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="vi">@landmark</span> <span class="o">=</span> <span class="no">Landmark</span><span class="o">.</span><span class="n">first</span> <span class="c1">#1</span>
+</span><span class='line'>    <span class="n">visit</span> <span class="sr">/landmarks/</span><span class="c1">#{@landmark.id}/edit #2</span>
+</span><span class='line'>    <span class="n">fill_in</span><span class="p">(</span><span class="s1">&#39;landmark[name]&#39;</span><span class="p">,</span> <span class="ss">:with</span> <span class="o">=&gt;</span> <span class="s1">&#39;Statue of Liberty&#39;</span><span class="p">)</span> <span class="c1">#3</span>
+</span><span class='line'>    <span class="n">click_button</span><span class="p">(</span><span class="s1">&#39;Save&#39;</span><span class="p">)</span> <span class="c1">#4</span>
+</span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">current_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="s2">&quot;/landmarks/</span><span class="si">#{</span><span class="vi">@landmark</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span> <span class="c1">#5</span>
+</span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span> <span class="s1">&#39;Statue of Liberty&#39;</span> <span class="c1">#6</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Well, if it all works as expected, it’s easy. Unfortunately my group and I ran into some issues running this test. We were getting an issue that we weren’t seeing in our actual application. Because Capybara is running a hidden browser, we needed a way to confirm that our test was seeing the same thing we were seeing in our localhost.</p>
+
+<p>Capybara has some awesome ways to do this. The browser is hidden but it doesn’t have to be. I learned about the gem ‘launchy’. According to the ReadMe for the gem, “Launchy is a helper class for launching cross-platform applications”. This means that no matter what your platform is, launchy will allow you perform applications you otherwise might need to specify in different syntaxes.</p>
+
+<p>But back to Capybara. I needed to be able to open the page that Capybara was opening using the ‘visit’ keyword in order to debug. Capybara has a method save_and_open_page, which saves a current snapshot of the page and opens it. This allowed my group to see we had an issue with our ids because we hadn’t opened our Capybara DSL connection! After adding the following lines to the spec helper, we were off to the races.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">include</span> <span class="no">Capybara</span><span class="o">::</span><span class="no">DSL</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are some other web-based automation tools, such as    <a href = "http://www.rubydoc.info/gems/selenium-webdriver/0.0.28/Selenium/WebDriver/Driver">Selenium</a> and <a href= "http://watir.com/">Watir</a>, which are worth looking into if Capybara doesn’t have everything you need. Unfortunately if you Google those you won’t get shown cute pictures of the animal :)</p>
+
+<p><img src="images/capybara.jpg"></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-10-23T07:47:00-04:00" pubdate data-updated="true"></time></div>
+	
+
+
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+<!---	<a class="addthis_counter addthis_pill_style"></a> --->
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Jessie Nadler
+
+<br>
+Powered by Octopress.
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>
