@@ -102,6 +102,183 @@ $(document).ready(
     <article class="post">
 	<h2 class="title">
 		
+		<a href="/blog/2015/11/08/refactoring-my-first-rails-app/">
+		
+			Refactoring My First Rails App</a>
+	</h2>
+	<div class="entry-content">
+		<p>Last week I worked in a group to create my first Rails app! I had only created one other app from scratch in the past, which was done in Sinatra. A group of fellow Flatiron students and I made a dinner party organizer, currently titled <a href = "https://github.com/nadlerjessie/dinner_party/tree/master/DinnerParty">Bring It</a>. I was really excited by the project and was ready to get some of the functionality going. Unfortunately, this caused me to write some code that wasn&rsquo;t very DRY.</p>
+
+<p>This project gave me a new appreciation for the refactoring process, which I hadn&rsquo;t yet done on such a big scale. In this post I&rsquo;ll take you through the cycle of just one section of code.</p>
+
+<p><strong>The Problem:</strong><br>
+I have a class called MenuItems, which belongs to a Dinner as well as a Dish. This means that each menu item would be for a specific dinner party as well as a specific dish with information about the food itself. However each dish also had a type of course: main dishes, salads, appetizers and desserts. On the views I wanted to group the dishes by their course so they could have appropriate headers, like a normal menu.</p>
+
+<p><strong>Round 1: My Initial Code [class MenuItemsController]</strong><br>
+In my controller I wrote the following code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>  <span class="vi">@main_dishes</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="s2">&quot;Main Dish&quot;</span><span class="p">})</span>
+</span><span class='line'>  <span class="vi">@salads</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="s2">&quot;Salad&quot;</span><span class="p">})</span>
+</span><span class='line'>  <span class="vi">@appetizers</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="s2">&quot;Appetizer&quot;</span><span class="p">})</span>
+</span><span class='line'>  <span class="vi">@desserts</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="s2">&quot;Dessert&quot;</span><span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are clearly a ton of issues with this code. A short list of issues:</p>
+
+<p>1) When passing these instance variables to the views, I needed to have different HTML calls to iterate through each one<br>
+2) It&rsquo;s incredibly repetitive<br>
+3) The database searches were happening in the controller<br>
+4) The courses are hardcoded</p>
+
+<p>But it worked and that was what I needed to get started! Red, green, refactor&hellip; right? The first bit of refactoring I did was to alleviate problem number 1 stated above. I wanted to remove the redundancy from the view.</p>
+
+<p><strong>Round 2: A First Attempt to Refactor [class MenuItemsController]</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>  <span class="n">main_dishes</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="s2">&quot;Main Dish&quot;</span><span class="p">})</span>
+</span><span class='line'>  <span class="n">salads</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="s2">&quot;Salad&quot;</span><span class="p">})</span>
+</span><span class='line'>  <span class="n">appetizers</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="s2">&quot;Appetizer&quot;</span><span class="p">})</span>
+</span><span class='line'>  <span class="n">desserts</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="s2">&quot;Dessert&quot;</span><span class="p">})</span>
+</span><span class='line'>  <span class="vi">@all_dishes</span> <span class="o">=</span> <span class="o">[</span><span class="n">main_dishes</span><span class="p">,</span> <span class="n">salads</span><span class="p">,</span> <span class="n">appetizers</span><span class="p">,</span> <span class="n">desserts</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This was really no better on the controller side but it allowed me to iterate through @all_dishes in my index view rather than having separate code to display each course. At this point I wisened up and decided I didn&rsquo;t want four separate calls and I didn&rsquo;t want any of the database searches to be in the controller. In my MenuItem model I wrote the following:</p>
+
+<p><strong>Round 3: Moving Code to the Model</strong><br>
+In the MenuItem model I wrote:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vc">@@courses</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;Main Dish, Salad, Appetizer, Dessert&quot;</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">index_by_course</span><span class="p">(</span><span class="n">dinner_id</span><span class="p">)</span>
+</span><span class='line'>  <span class="vc">@@courses</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">course</span><span class="o">|</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="n">course</span><span class="p">})</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And in the MenuItemsController:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>  <span class="vi">@menu_items_by_course</span> <span class="o">=</span> <span class="no">MenuItem</span><span class="o">.</span><span class="n">index_by_course</span><span class="p">(</span><span class="vi">@dinner</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This was definitely feeling like a step in the right direction. One remaining issue was that I was defining courses as a class variable in MenuItem even though it was a property of Dish. This got me into some trouble later. I had written similar code to organize all of the dishes by their course (as opposed to just dishes for this specific dinner menu, or menu items) and refactored similarly as well. All of a sudden on one of my pages I didn&rsquo;t see the main dishes! I was already weary of my definition of courses, especially because I had it in two places. It turned out, I had typed one as &ldquo;Main Dishes&rdquo; and another as &ldquo;Main Dish&rdquo;. It was definitely time to remove this redundancy.</p>
+
+<p><strong>Round 4: Adding a CONSTANT!</strong><br>
+Course was defined as a property of a dish, so I wanted to add the constant there. The dish model became:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Dish</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:menu_items</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:dish_assignments</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:menu_items</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">COURSES</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;Main Dishes&quot;</span><span class="p">,</span> <span class="s2">&quot;Sides&quot;</span><span class="p">,</span> <span class="s2">&quot;Appetizers&quot;</span><span class="p">,</span> <span class="s2">&quot;Desserts&quot;</span><span class="p">,</span> <span class="s2">&quot;Beverages&quot;</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_available_dishes</span><span class="p">(</span><span class="n">dinner_id</span><span class="p">,</span> <span class="n">menu_ids</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">COURSES</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">course</span><span class="o">|</span>
+</span><span class='line'>      <span class="no">Dish</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;dishes.*&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">course</span><span class="p">:</span> <span class="n">course</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="o">.</span><span class="n">not</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">menu_ids</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I was then able to update my menu_items_by_course class method to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">index_by_course</span><span class="p">(</span><span class="n">dinner_id</span><span class="p">)</span>
+</span><span class='line'>  <span class="no">Dish</span><span class="o">::</span><span class="no">Courses</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">course</span><span class="o">|</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:dish</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">dinner_id</span><span class="p">:</span> <span class="n">dinner_id</span><span class="p">,</span> <span class="ss">dishes</span><span class="p">:</span> <span class="p">{</span><span class="ss">course</span><span class="p">:</span> <span class="n">course</span><span class="p">})</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Reviewing the Issues</strong><br>
+Going back to my short list of issues with my initial code, I can see how those issues were resolved.</p>
+
+<p>1) <em>When passing these instance variables to the views, I needed to have different HTML calls to iterate through each one</em> - <strong>I solved this one early on in my refactoring process. First by passing four different database calls into an array before passing the instance variable to the view and later by mapping results while iterating over courses.</strong><br>
+2) <em>It&rsquo;s incredibly repetitive</em> - <strong>Much of this repetitive nature has been reduced using iteration</strong><br>
+3) <em>The database searches were happening in the controller</em> - <strong>Database searches were now moved to the model</strong><br>
+4) <em>The courses are hardcoded</em> - <strong>While the courses are listed in the dish model, they are only listed in one place. This makes debugging easier and gives much more flexibility! I ended up changing the course options to Main Dishes, Sides, Appetizers, Desserts, and I added Beverages, which was all easy because they were defined in a single place. As a result of making my code more DRY I didn&rsquo;t have to made modifications in the other models, controllers, or views!</strong></p>
+
+<p>I know that I will always be able to refactor code after I write it but hopefully by reflecting on my refactoring process I will write cleaner code in earlier stages.</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-11-08T16:41:39-05:00" pubdate data-updated="true"></time></div>
+	
+
+
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
 		<a href="/blog/2015/10/23/capybara/">
 		
 			Capybara</a>
