@@ -1,0 +1,56 @@
+---
+layout: post
+title: "Capybara"
+date: 2015-10-23 07:47:00 -0400
+comments: true
+categories: 
+---
+
+In the last week I started to work with Sinatra and building my first web applications. Some of the labs I have done at the Flatiron School have used the Capybara gem as part of the test specs. Though I was interacting with Capybara, it was mostly indirectly. I didn’t need to look too closely at the Capybara functionality until a group I was working with needed to write some specs of our own. 
+
+Capybara is a framework that allows you to test your web-based applications. Capybara is a web-based automation tool; it will simulate how your users will interact with your application. 
+
+Capybara is loaded using the DSL (domain specific language) and has a number of capabilities similar to what a user might do when visiting a webpage. Some basic functions are listed below:
+```ruby
+visit(‘page_url’) #navigate to page
+click_link(‘id_of_link’) #click link
+click_button(‘link_text’) #click button
+click_on(‘link_text’) #this will look for either a link or a button
+fill_in(‘params_path’, :with => ‘value’) #adds content to field
+choose(‘radio_button’) #checks radio button
+check(‘checkbox’) #selects checkbox
+uncheck(‘checkbox’) #removes existing checkbox selection
+```
+These are super useful! Using Capybara your test spec can navigate to any page and make selections just like a user would make. Typically the last thing to check is whether or not the rendered page has the correct content. Capybara has a keyword ‘page’, which allows you to do just that! 
+
+Below is the code I used to confirm my webpage was working. First I created an instance variable to operate on (1). Next I navigated to the correct webpage (2) and filled in the name for a landmark (3). I saved the file (4) and confirmed that saving the page took me to the right URL (5). Last (6), I confirmed that the page had the content I added in step 3! Easy, right?
+```ruby
+describe LandmarksController do
+  it "changes landmark and saves changes" do
+    @landmark = Landmark.first #1
+    visit "/landmarks/#{@landmark.id}/edit" #2
+    fill_in('landmark[name]', :with => 'Statue of Liberty') #3
+    click_button('Save') #4
+    expect(current_path).to eq "/landmarks/#{@landmark.id}" #5
+    expect(page).to have_content 'Statue of Liberty' #6
+  end  
+end
+```
+Well, if it all works as expected, it’s easy. Unfortunately my group and I ran into some issues running this test. We were getting an issue that we weren’t seeing in our actual application. Because Capybara is running a hidden browser, we needed a way to confirm that our test was seeing the same thing we were seeing in our localhost. 
+
+Capybara has some awesome ways to do this. The browser is hidden but it doesn’t have to be. I learned about the gem ‘launchy’. According to the ReadMe for the gem, “Launchy is a helper class for launching cross-platform applications”. This means that no matter what your platform is, launchy will allow you perform applications you otherwise might need to specify in different syntaxes. 
+
+But back to Capybara. I needed to be able to open the page that Capybara was opening using the ‘visit’ keyword in order to debug. Capybara has a method save_and_open_page, which saves a current snapshot of the page and opens it. This allowed my group to see we had an issue with our ids because we hadn’t opened our Capybara DSL connection! After adding the following lines to the spec helper, we were off to the races. 
+
+```ruby
+RSpec.configure do |config|
+  config.include Capybara::DSL
+end
+```
+
+There are some other web-based automation tools, such as    <a href = "http://www.rubydoc.info/gems/selenium-webdriver/0.0.28/Selenium/WebDriver/Driver">Selenium</a> and <a href= "http://watir.com/">Watir</a>, which are worth looking into if Capybara doesn’t have everything you need. Unfortunately if you Google those you won’t get shown cute pictures of the animal :)
+
+{% img center /images/capybara.jpg %}
+
+
+
