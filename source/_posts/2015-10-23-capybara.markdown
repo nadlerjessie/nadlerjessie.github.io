@@ -3,7 +3,7 @@ layout: post
 title: "Capybara"
 date: 2015-10-23 07:47:00 -0400
 comments: true
-categories: 
+categories: "Testing", "Flatiron School", "Capybara"
 ---
 
 In the last week I started to work with Sinatra and building my first web applications. Some of the labs I have done at the Flatiron School have used the Capybara gem as part of the test specs. Though I was interacting with Capybara, it was mostly indirectly. I didn’t need to look too closely at the Capybara functionality until a group I was working with needed to write some specs of our own. 
