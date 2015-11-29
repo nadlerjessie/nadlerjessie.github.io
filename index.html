@@ -102,6 +102,130 @@ $(document).ready(
     <article class="post">
 	<h2 class="title">
 		
+		<a href="/blog/2015/11/29/when-rails-met-ember/">
+		
+			When Rails Met Ember</a>
+	</h2>
+	<div class="entry-content">
+		<p>During the past week and a half at the Flatiron School I have been learning about Ember. The big brewing question in my mind while learning different features was, how does this work with Rails? I worked on labs where the back-end was done for me and I only had to build out the front-end to make requests to the Rails API. I know this is something we will cover next week but I was too eager to wait. Can you think of a better way to spend the day before Thanksgiving?!</p>
+
+<p>The purpose of this blog post is to go through the basic steps of creating an App with a Rails front-end and an Ember back-end. This post assumes you know how to build apps in both Rails and Ember but need more information on how to connect them.</p>
+
+<p><strong>Create a Rails app</strong>  <br>
+That&rsquo;s easy enough! There are two ways to do this. I used rails new and later added the rails-api gem to my gemfile. Alternatively, you can install the gem in your terminal <code>gem install rails-api</code> and generate a new Rails::API with <code>rails-api new my_api</code>
+This gem makes ApplicationController inherit from ActionController::API instead of ActionController::Base. If you generate your app the standard way, this is a change you will have to make manually to your app/controllers/application_controller.rb file. Be sure to comment out the protect_from_forgery line as well. For extra information on this gem, refer to the <a href= "https://github.com/rails-api/rails-api">README on github</a>. <br></p>
+
+<p><strong>Add gems</strong>  <br>
+In additon to the rails-api gem, there are a few others needed to correctly configure your app as an API. The first is rack-cors. This is a piece of Rack Middleware. It will make which makes cross-origin AJAX possible by handling Cross-Origin Resource Sharing (CORS). This is critical because otherwise your Ember app won&rsquo;t be able to make requests to your Rails app! Add <code>gem 'rack-cors', :require =&gt; 'rack/cors'</code> to your gemfile. In config/application.rb add the following inside YourApp::Application</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>config.middleware.insert_before 0, "Rack::Cors" do
+</span><span class='line'>      allow do
+</span><span class='line'>        origins '*'
+</span><span class='line'>        resource '*', :headers =&gt; :any, :methods =&gt; [:get, :post, :options]
+</span><span class='line'>      end
+</span><span class='line'>    end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The &lsquo;*&rsquo; for origins is a wildcard that allows for requests to be made from any origin. If you know specifically which origin(s) you want to allow access from, maybe your localhost port or an existing web app, replace the star with the accepted URL(s). Refer to the <a href= "https://github.com/cyu/rack-cors">README on github</a> for more on rack-cors.</p>
+
+<p>The other gem to include is active_model_serializers. This will allow you to serialize your ActiveModel/ActiveRecord objects into your desired format (ex: JSON). Include <code>ActionController::Serialization</code> in your application controller. <br></p>
+
+<p><strong>Define associations</strong>  <br>
+Set up your schema and define your associations as you normally would in the models. There is also a folder for serialzers, which needs to be configured. You will need to specify which attributes and associations you want to include in the serialzed form. For example:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class PostSerializer &lt; ActiveModel::Serializer
+</span><span class='line'>  attributes :id, :title, :body
+</span><span class='line'>  has_many :comments
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Having the full comment may not be ideal for your application. This will depend on how many associations you have and the size of your models. Adding <code>embed :ids, include: true</code> will embed the ids of the comments in the JSON response. For more, look at the <a href= "https://github.com/rails-api/active_model_serializers/tree/0-9-stable">README on github</a>. <br></p>
+
+<p><strong>Create an Ember app</strong>  <br>
+Run <code>ember new my-app</code>. Set up your models to match the responses from the Rails side. For the example above, the app/models/post.js file would look like:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import DS from 'ember-data';
+</span><span class='line'>
+</span><span class='line'>export default DS.Model.extend({
+</span><span class='line'>  title: DS.attr('string'),
+</span><span class='line'>  body: DS.attr('text'),
+</span><span class='line'>  comments: DS.hasMany('comments', {async: true})
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next you will need to install active-model-adapter. This will act as both an adapter and a serializer. Run <code>ember install active-model-adapter</code>. If you don&rsquo;t already have an application adapter, generate one. It should be in app/adapters/application.js. Replace the content with the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import ActiveModelAdapter from 'active-model-adapter';
+</span><span class='line'>
+</span><span class='line'>export default ActiveModelAdapter.extend({
+</span><span class='line'>  namespace: "api/v1",
+</span><span class='line'>  host: "http://localhost:3000"
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The namespace should reflect any namespacing done in the Rails side. Though not explicitly stated above, it is convention to have the controllers to be in a namespace of API and the version number. <br></p>
+
+<p><strong>Finish up the front-end</strong><br>
+Define your models, add any components you may need, create your templates and do whatever else you need the front-end of your application to have!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-11-29T16:03:30-05:00" pubdate data-updated="true"></time></div>
+	
+
+<div class="tags">
+
+	<a class='category' href='/blog/categories/api/'>api</a>, <a class='category' href='/blog/categories/ember/'>ember</a>, <a class='category' href='/blog/categories/flatiron/'>flatiron</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
+
+</div>
+
+
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
 		<a href="/blog/2015/11/08/refactoring-my-first-rails-app/">
 		
 			Refactoring My First Rails App</a>
@@ -373,7 +497,7 @@ Going back to my short list of issues with my initial code, I can see how those 
   
 
 
-<time datetime="2015-10-23T07:47:00-04:00" pubdate data-updated="true"></time></div>
+<time datetime="2015-10-23T00:00:00-04:00" pubdate data-updated="true"></time></div>
 	
 
 
