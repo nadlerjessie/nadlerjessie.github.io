@@ -1,0 +1,164 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script data-cfasync="false" type="text/javascript" src="//use.typekit.net/axj3cfp.js"></script>
+	<script data-cfasync="false" type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<meta charset="utf-8">
+	<title>portfolio  | Codin'</title>
+
+<meta name="author" content="Jessie Nadler"> 
+
+<meta name="description" content="Learning about programming and some other things along the way."> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Codin'" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+	
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Codin'</a></h1>
+<h4>Here we go!</h4>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/about">About</a></li>
+	<li><a href="/portfolio">Portfolio</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/about">About</a></li>
+	<li><a href="/portfolio">Portfolio</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nadlerjessie.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="page">
+    <div class="entry-content"><p><a href = "https://github.com/mgsterling11/food_site">Cookbook</a> - An application to catalogue recipes; a user can add their personal recipes, view them from a master database, and favorite them. This is a current project and is not yet complete.<br></p>
+
+<ul>
+<li>Rails App with a PostgreSQL database organize recipes</li>
+<li>Admin authorization allows for display of recipe statistics</li>
+<li>Uses adapter to scrape a recipe from a Food Network link</li>
+<li>Leverages jQuery and AJAX on the front-end to create a cleaner user experience and minimize back-end requests</li>
+<li>Incorporates fuzzy search to view recipes by ingredient or recipe name</li>
+</ul>
+
+
+<p><a href = "https://github.com/nadlerjessie/dinner_party">Bring It</a> - A dinner party organizer to invite friends and coordinate a menu without any overlap in what the guests bring. This project was build during week 6 at the Flatiron School. <a href = "https://bring-it-dinner-party.herokuapp.com/">See it on Heroku</a><br></p>
+
+<ul>
+<li>Rails App with a PostgreSQL database to help organize dinner parties, allowing users to invite friends, create a menu, and ensure guests bring different things</li>
+<li>Connects with Food2Fork API to suggest recipes based on the menu chosen by the host</li>
+<li>Leverages advanced ActiveRecord to determine whether a dish has already been claimed by a guest</li>
+<li>Uses MVC structure to display information and connect domain models</li>
+</ul>
+
+
+<p><a href = "https://github.com/nadlerjessie/ember-rails-practice">School Domain</a> - An Ember/Rails application to view a course with corresponding teachers and students. This was created one afternoon with classmates as a way to practice building a Rails API and connecting it to an Ember front-end we built.<br></p>
+
+<ul>
+<li>Uses a Rails back-end API to render JSON to the Ember front-end</li>
+<li>Ember application connects to Rails API with Active Model Adapter</li>
+<li>Displays teachers through components upon course selection</li>
+</ul>
+
+
+<p><a href = "https://github.com/nadlerjessie/sports-digest">Game Time</a> - An application to signup and receive weekly emails containing your favorite NFL team’s upcoming schedule. This project was created for a Flatiron Presents Meetup.<br></p>
+
+<ul>
+<li>Built in Sinatra with a SQLite database for users</li>
+<li>Uses Ruby Mail gem to handle sending weekly emails with upcoming game information</li>
+<li>Scrapes NFL schedules from ESPN with Nokogiri to populate the body of the email for each user</li>
+</ul>
+
+</div>
+</article>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Jessie Nadler
+
+<br>
+Powered by Octopress.
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>
